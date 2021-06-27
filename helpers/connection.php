@@ -149,7 +149,7 @@ class Connection
             $template = $res;
         }
 
-        return $template;
+        return $template==(object)[]?null:$template;
     }
 
     public function update($fields, $table, $where = "1=1")
@@ -181,5 +181,9 @@ class Connection
         $query = "insert into {$table}($field_list) values ({$this->buildFields($fields, false)})";
 
         return $this->query($query);
+    }
+
+    public function getError(){
+        return $this->connection->error;
     }
 }

@@ -3,7 +3,7 @@
         <svg class="bi me-2" width="40" height="32">
             <use xlink:href="#bootstrap"></use>
         </svg>
-        <span class="fs-4">PERPUSTAKAAN</span>
+        <span class="fs-4"><?= $this->config['app_name'] ?></span>
     </a>
 
     <?php include_once 'sidebar.php' ?>

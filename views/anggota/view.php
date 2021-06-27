@@ -11,7 +11,7 @@ $anggota = $this->db->findOne([
 
 
 if((array)$anggota == []):
-    header("location: ?module=site&routes=error&error=404");
+    Url::redirect('site/error',['error'=>"404"]);
 endif;
 
 ?>
@@ -37,7 +37,7 @@ endif;
         <tr>
             <td>Tanggal Lahir</td>
             <td>:</td>
-            <td><?=$anggota->tgl_lahir?></td>
+            <td><?=Tanggal::toReadable($row->tgl_lahir)?></td>
         </tr>
         <tr>
             <td>Alamat</td>
@@ -52,4 +52,4 @@ endif;
     </tbody>
 </table>
 
-<a href="?module=anggota&routes=index" class="btn btn-warning">Kembali</a>
+<a href="<?=Url::to('anggota')?>" class="btn btn-warning">Kembali</a>

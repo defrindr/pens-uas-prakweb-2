@@ -1,6 +1,6 @@
 <?php
 
-if(isset($_POST['id'])){
+if (isset($_POST['id'])) {
     $anggota = $this->db->findOne([
         "where" => [
             "=",
@@ -8,28 +8,25 @@ if(isset($_POST['id'])){
             $_POST['id'],
         ],
     ], "anggota");
-    
-    if((array)$anggota == []):
-        header("location: ?module=site&routes=error&error=404");
+
+    if ((array) $anggota == []):
+        Url::redirect('site/error', ['error' => '404']);
     endif;
-    
+
     $response = $this->db->delete("anggota", [
         "=",
         "nrp",
         $anggota->nrp,
     ]);
-    
-    if(isset($response)){
-    
-        if($response){
-            header("location: ?module=anggota&routes=index&delete-success=true");
-        }else{
-            header("location: ?module=anggota&routes=index&delete-success=false");
-        }
+
+    if ($response) {
+        Url::redirect('anggota/index', ['delete-success' => 'true']);
+    } else {
+        Url::redirect('anggota/index', [
+            'delete-success' => 'false',
+            'msg' => $this->db->getError(),
+        ]);
     }
-}else{
+} else {
     echo "400 bad request";
 }
-
-
-?>

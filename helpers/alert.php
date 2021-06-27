@@ -1,7 +1,7 @@
 <?php
 
 class Alert {
-    public static function message(){
+    public static function message($err=""){
         $show = 0;
         $color = "success";
 
@@ -13,10 +13,10 @@ class Alert {
             $message = "Data berhasil di buat";
         } else if(isset($_GET['delete-success'])){
             $show = 1;
-            if($_GET['delete-success'] == true){
+            if($_GET['delete-success'] == "true"){
                 $message = "Data berhasil di hapus";
             } else {
-                $message = "Data gagal di hapus";
+                $message = "Data gagal di hapus: ".$_GET['msg'];
                 $color = "danger";
             }
         } 

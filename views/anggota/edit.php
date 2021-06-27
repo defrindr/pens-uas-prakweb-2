@@ -10,17 +10,17 @@ $anggota = $this->db->findOne([
 ], "anggota");
 
 if((array)$anggota == []):
-    header("location: ?module=site&routes=error&error=404");
+    Url::redirect('site/error', ['error' => '404']);
 endif;
 
 if(isset($_POST['nrp'])){
     $response = $this->db->update($_POST, "anggota", "nrp='$anggota->nrp'");
 
     if($response){
-        header("location: ?module=anggota&routes=index&update-success=true");
+        Url::redirect('anggota', ['update-success' => 'true']);
     }else{ ?>
         <div class="alert alert-danger">
-            Gagal Diupdate
+            Gagal Diupdate: <?= $this->db->getError() ?>
         </div>
     <?php }
 }
@@ -57,6 +57,6 @@ if(isset($_POST['nrp'])){
     </div>
     <div class="mb-3">
         <button class="btn btn-primary" value="submit">Submit</button>
-        <a href="?module=anggota&routes=index" class="btn btn-warning">Kembali</a>
+        <a href="<?=Url::to('anggota');?>" class="btn btn-warning">Kembali</a>
     </div>
 </form>
