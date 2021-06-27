@@ -1,22 +1,22 @@
 <?php
-// http://localhost:8085/uts_web/index.php?module=authorize&routes=google
+// http://localhost:8085/sigudang/index.php?module=authorize&routes=google
 // 793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com
 // ASPmtGj_OIfpzZVoyFzEMzV_
 
-// https://accounts.google.com/o/oauth2/v2/auth?client_id=793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com&redirect_uri=http://localhost:8085/uts_web/authorize.php&scope=profile email openid&response_type=code&access_type=offline&include_granted_scopes=true
+// https://accounts.google.com/o/oauth2/v2/auth?client_id=793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com&redirect_uri=http://localhost:8085/sigudang/authorize.php&scope=profile email openid&response_type=code&access_type=offline&include_granted_scopes=true
 
-// https://accounts.google.com/o/oauth2/v2/auth?client_id=793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com&redirect_uri=http://localhost:8085/uts_web/authorize/google&scope=profile email openid&response_type=code&access_type=offline&include_granted_scopes=true
+// https://accounts.google.com/o/oauth2/v2/auth?client_id=793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com&redirect_uri=http://localhost:8085/sigudang/authorize/google&scope=profile email openid&response_type=code&access_type=offline&include_granted_scopes=true
 // profile email openid
 
 $GCLIENT_ID = "793113128601-f5d7ro24m6ktd2sbdue1t44b834f8o27.apps.googleusercontent.com";
-$GCLIENT_SECRET ="ASPmtGj_OIfpzZVoyFzEMzV_";
+$GCLIENT_SECRET = "ASPmtGj_OIfpzZVoyFzEMzV_";
 
-$response = HttpHelper::postApi("https://www.googleapis.com/oauth2/v4/token",[
-    "code"=> $_GET['code'],
-    "client_id"=> $GCLIENT_ID,
-    "client_secret"=> $GCLIENT_SECRET,
-    "redirect_uri"=> 'http://localhost:8085/uts_web/authorize/google',
-    "grant_type"=> 'authorization_code'
+$response = HttpHelper::postApi("https://www.googleapis.com/oauth2/v4/token", [
+    "code" => $_GET['code'],
+    "client_id" => $GCLIENT_ID,
+    "client_secret" => $GCLIENT_SECRET,
+    "redirect_uri" => 'http://localhost:8085/sigudang/authorize/google',
+    "grant_type" => 'authorization_code',
 ]);
 
 if (isset($response->error)) {
@@ -54,7 +54,7 @@ if ($check) {
         $this->user->login($saved);
         Url::redirect('site');
     } else {
-        echo "Terjadi kesalahan ketika menyimpan user:". $this->db->getError();
+        echo "Terjadi kesalahan ketika menyimpan user:" . $this->db->getError();
         die;
     }
 }

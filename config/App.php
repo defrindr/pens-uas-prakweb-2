@@ -4,6 +4,12 @@ class App
     public $db;
     private $user;
     private $config;
+    static $dbconfig = [
+        "host" => "localhost:33067",
+        "username" => "root",
+        "password" => "defrindr",
+        "dbname" => "si_gudang",
+    ];
     public $base_root = "";
     public $title = "SIGUDANG";
     public $layout = "layouts/main.php";
@@ -12,16 +18,11 @@ class App
     {
         $this->config = [
             "app_name" => "SIGUDANG",
-            "author" => "Defri Indra M"
+            "author" => "Defri Indra M",
         ];
         $this->base_root = $this->getRootDir();
         $this->user = new User;
-        $this->db = new Connection([
-            "host" => "localhost:33067",
-            "username" => "root",
-            "password" => "defrindr",
-            "dbname" => "si_gudang",
-        ]);
+        $this->db = new Connection(self::$dbconfig);
 
         ob_start();
         $this->render();

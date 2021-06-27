@@ -3,16 +3,29 @@
 class User
 {
     private $_user = [];
+    private $db = [];
 
     public function __construct()
     {
-        $this->_user = ($_SESSION['user']) ? $_SESSION['user'] : [];
+        $this->_user = isset($_SESSION['user']) ? $_SESSION['user'] : [];
+        $this->db = new Connection(App::$dbconfig);
         return $this;
     }
 
     public function login($user)
     {
-        $this->_user = $user;
+        $new_user = (array) $user;
+        $new_user["last_login"] = date("Y-m-d H:i:s");
+
+        $this->db->update($new_user, "user", "id='$user->id'");
+
+        $this->_user = $this->db->findOne([
+            "where" => [
+                "=",
+                "id",
+                $user->id,
+            ],
+        ], "user");
         $_SESSION['user'] = $this->_user;
     }
 
@@ -38,6 +51,7 @@ class User
 
     public function get($name)
     {
+        dd($this->_user);
         return $this->_user->$name ?? null;
     }
 
