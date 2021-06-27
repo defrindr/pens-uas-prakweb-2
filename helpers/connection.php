@@ -7,10 +7,12 @@
 class Connection
 {
     protected $connection;
+    protected $db_name;
 
     public function __construct($params)
     {
-        $this->connection = mysqli_connect($params['host'], $params['username'], $params['password'], $params['dbname']) or die("Koneksi gagal");
+        $this->db_name = $params['dbname'];
+        $this->connection = mysqli_connect($params['host'], $params['username'], $params['password'], $this->db_name) or die("Koneksi gagal");
     }
 
     public function query($query)
@@ -99,7 +101,7 @@ class Connection
 
             $query .= $join;
         endif;
-        
+
         if (isset($base_params['where'])):
             $query .= " where {$this->where($base_params['where'][0], $base_params['where'])}";
         endif;
@@ -119,9 +121,20 @@ class Connection
         return $query;
     }
 
-    private function parseAsObj($mysqli_result){
+    private function parseAsObj($mysqli_result)
+    {
         $template = [];
-        while($res = mysqli_fetch_object($mysqli_result)){
+        while ($res = mysqli_fetch_object($mysqli_result)) {
+            $template[] = $res;
+        }
+
+        return $template;
+    }
+
+    private function parseAsArray($mysqli_result)
+    {
+        $template = [];
+        while ($res = mysqli_fetch_array($mysqli_result)) {
             $template[] = $res;
         }
 
@@ -143,13 +156,13 @@ class Connection
         $base_params = array_merge($base_params, $params);
         $query = $this->buildQuery($base_params, $table);
         $mysqli_result = $this->query($query);
-        $template = (object)[];
+        $template = (object) [];
 
-        while($res = mysqli_fetch_object($mysqli_result)){
+        while ($res = mysqli_fetch_object($mysqli_result)) {
             $template = $res;
         }
 
-        return $template==(object)[]?null:$template;
+        return $template == (object) [] ? null : $template;
     }
 
     public function update($fields, $table, $where = "1=1")
@@ -158,8 +171,6 @@ class Connection
         return $this->query($query);
     }
 
-    
-
     public function delete($table, $where = [])
     {
         $query = "delete from {$table}";
@@ -167,10 +178,11 @@ class Connection
         return $this->query($query);
     }
 
-
     public function insertOne($fields, $table)
     {
-        if($fields == []) return false;
+        if ($fields == []) {
+            return false;
+        }
 
         $field_list = [];
         foreach ($fields as $key => $val) {
@@ -183,7 +195,50 @@ class Connection
         return $this->query($query);
     }
 
-    public function getError(){
+    public function getError()
+    {
         return $this->connection->error;
+    }
+
+    public function getColumns($table_name, $config = [])
+    {
+        $unset = $config["unset"] ?? [];
+        $without_key = $config["without_primary_key"] ?? true;
+
+        $query = "select column_name from information_schema.columns where table_schema='{$this->db_name}' and table_name='$table_name'";
+        $data = $this->parseAsArray($this->query($query));
+        $columns = [];
+
+        foreach ($data as $key) {
+            $columns[] = $key['column_name'];
+        }
+
+        if($without_key){
+            $primary_key = $this->getPrimaryKey($table_name);
+        
+            $unset[] = $primary_key;
+        }
+
+        foreach ($columns as $id => $col) {
+            foreach ($unset as $key) {
+                if ($key == $col) {
+                    unset($columns[$id]);
+                }
+            }
+        }
+
+        return $columns;
+    }
+
+    public function getPrimaryKey($table_name)
+    {
+        $query = "select column_name from information_schema.columns where table_schema='{$this->db_name}' and table_name='$table_name' and column_key='PRI' limit 1";
+
+        $data = mysqli_fetch_array($this->query($query));
+        if (isset($data['column_name'])) {
+            return $data['column_name'];
+        }
+
+        return null;
     }
 }

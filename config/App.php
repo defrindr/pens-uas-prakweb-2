@@ -20,7 +20,7 @@ class App
             "host" => "localhost:33067",
             "username" => "root",
             "password" => "defrindr",
-            "dbname" => "semester2_web_uts",
+            "dbname" => "si_gudang",
         ]);
 
         ob_start();
