@@ -7,7 +7,9 @@ $primary_key = $this->db->getPrimaryKey($table_name);
 $columns = $this->db->getColumns($table_name, [
     "without_primary_key" => false,
     "unset" => [
-        "lokasi_id",
+        "created_by",
+        "barang_id",
+        "created_at",
     ],
 ]);
 
@@ -23,7 +25,8 @@ $this->title = $readable_name;
         <?php foreach ($columns as $col): ?>
             <th><?=ucwords(str_replace("_", " ", $col))?></th>
         <?php endforeach?>
-        <th>Lokasi</th>
+        <th>Dibuat Oleh</th>
+        <th>Barang</th>
         <th>Action</th>
     </thead>
     <tbody>
@@ -36,16 +39,20 @@ $this->title = $readable_name;
                 "where" => [
                     "=",
                     "id",
-                    $row->lokasi_id,
+                    $row->created_by,
                 ],
-            ], "lokasi")->ruang?></td>
+            ], "user")->name?>
+            </td>
+            <td><?=$this->db->findOne([
+                "where" => [
+                    "=",
+                    "id",
+                    $row->barang_id,
+                ],
+            ], "barang")->nama?>
+            </td>
             <td>
                 <a href="<?=Url::to($redirection . "/view", ['id' => $row->$primary_key])?>" class="btn btn-primary  mt-1">show</a>
-                <a href="<?=Url::to($redirection . "/edit", ['id' => $row->$primary_key])?>" class="btn btn-warning mt-1">edit</a>
-                <form action="<?=Url::to($redirection . "/delete")?>" method="post" style="display: inline-block;">
-                    <input type="hidden" name="id" value="<?=$row->$primary_key?>">
-                    <button class="btn btn-danger mt-1">delete</button>
-                </form>
             </td>
         </tr>
         <?php endforeach;?>

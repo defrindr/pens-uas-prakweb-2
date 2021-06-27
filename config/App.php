@@ -24,10 +24,9 @@ class App
         $this->user = new User;
         $this->db = new Connection(self::$dbconfig);
 
-        ob_start();
-        $this->render();
-        ob_end_clean();
-
+        // ob_start();
+        // $this->render();
+        // ob_end_clean();
     }
 
     private function getRootDir()

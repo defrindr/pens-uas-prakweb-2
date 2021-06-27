@@ -51,7 +51,6 @@ class User
 
     public function get($name)
     {
-        dd($this->_user);
         return $this->_user->$name ?? null;
     }
 

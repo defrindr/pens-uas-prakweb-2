@@ -12,17 +12,47 @@ $jenis = [
 ];
 
 if (isset($_POST[$trigger])) {
+    $this->db->beginTransaction();
     unset($_POST[$trigger]);
 
     $_POST['tanggal'] = date("Y-m-d", strtotime($_POST['tanggal']));
     $_POST['created_at'] = date("Y-m-d H:i:s");
-    $_POST['created_by'] = null;
+    $_POST['created_by'] = $this->user->get('id');
 
     $response = $this->db->insertOne($_POST, $table_name);
-    dd($this->db->getError());
 
     if ($response) {
-        Url::redirect($redirection, ['create-success' => 'true']);
+
+        $cek = (array) $this->db->findOne([
+            "where" => [
+                "=",
+                "id",
+                $_POST['barang_id'],
+            ],
+        ], "barang");
+
+        if ($_POST['jenis'] == "MASUK") {
+            $cek['stok'] += $_POST['jumlah'];
+        } else {
+            $cek['stok'] -= $_POST['jumlah'];
+        }
+
+        if ($cek['stok'] < 0) {?>
+            
+            <div class="alert alert-danger">
+                Gagal Dibuat : Stok tidak mencukupi
+            </div>
+            <?php
+            $this->db->rollback();
+        } else {
+
+            if ($this->db->update($cek, "barang", "id='{$cek['id']}'")) {
+                $this->db->commit();
+                Url::redirect($redirection, ['create-success' => 'true']);
+            }
+        }
+        $this->db->rollback();
+
     } else {?>
     <div class="alert alert-danger">
         Gagal Dibuat : <?=$this->db->getError()?>
@@ -49,7 +79,7 @@ if (isset($_POST[$trigger])) {
         <select name="jenis" id="jenis" class="form-control" required>
             <option value="">Pilih</option>
             <?php foreach ($jenis as $row): ?>
-                <option value="<?=$row?>"><?=$row?></option>
+                <option value="<?=$row?>" <?=(isset($_POST['jenis']) && $_POST['jenis'] == $row) ? "selected" : ""?>><?=$row?></option>
             <?php endforeach?>
         </select>
     </div>
@@ -58,7 +88,7 @@ if (isset($_POST[$trigger])) {
         <select name="barang_id" id="barang_id" class="form-control" required>
             <option value="">Pilih</option>
             <?php foreach ($barang as $row): ?>
-                <option value="<?=$row->id?>"><?=$row->nama?></option>
+                <option value="<?=$row->id?>" <?=(isset($_POST['barang_id']) && $_POST['barang_id'] == $row->id) ? "selected" : ""?>><?=$row->nama?></option>
             <?php endforeach?>
         </select>
     </div>

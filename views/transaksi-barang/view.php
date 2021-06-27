@@ -1,14 +1,17 @@
 <?php
 
-$redirection = $table_name = "barang";
+
+$table_name = "transaksi_barang";
+$redirection = str_replace("_", "-", $table_name);
 $primary_key = "id";
-$readable_column = "nama";
+$readable_column = "id";
 $readable_name = ucwords(str_replace("_", " ", $table_name));
 $trigger = "submit";
 $columns = $this->db->getColumns($table_name, [
     "without_primary_key" => false,
     "unset" => [
-        "lokasi_id"
+        "barang_id",
+        "created_by"
     ],
 ]);
 
@@ -22,13 +25,13 @@ $model = $this->db->findOne([
     ],
 ], $table_name);
 
-$lokasi=$this->db->findOne([
+$barang=$this->db->findOne([
     "where" => [
         "=",
         "id",
-        $model->lokasi_id,
+        $model->barang_id,
     ],
-], "lokasi")->ruang;
+], "barang")->nama;
 
 if ((array) $model == []):
     Url::redirect('site/error', ['error' => "404"]);
@@ -52,9 +55,9 @@ endif;
         </tr>
         <?php endforeach?>
         <tr>
-            <td>Lokasi</td>
+            <td>Barang</td>
             <td>:</td>
-            <td><?=$lokasi?></td>
+            <td><?=$barang?></td>
         </tr>
     </tbody>
 </table>

@@ -241,4 +241,16 @@ class Connection
 
         return null;
     }
+
+    public function beginTransaction(){
+        mysqli_begin_transaction($this->connection);
+    }
+
+    public function commit(){
+        mysqli_commit($this->connection);
+    }
+
+    public function rollBack(){
+        mysqli_rollback($this->connection);
+    }
 }
