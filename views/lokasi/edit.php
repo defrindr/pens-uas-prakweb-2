@@ -1,4 +1,9 @@
 <?php
+
+if($this->user->get('name')==null){
+    Url::redirect("site/index");
+}
+
 $redirection = $table_name = "lokasi";
 $primary_key = "id";
 $readable_column = "ruang";

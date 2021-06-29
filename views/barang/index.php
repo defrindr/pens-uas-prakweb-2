@@ -13,6 +13,11 @@ $columns = $this->db->getColumns($table_name, [
 $model = $this->db->find([], $table_name);
 
 $this->title = $readable_name;
+
+if($this->user->get('name')==null){
+    Url::redirect("site/index");
+}
+
 ?>
 
 <h1><?=$readable_name?></h1>

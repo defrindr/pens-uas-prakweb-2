@@ -1,4 +1,9 @@
 <?php
+
+if($this->user->get('name')==null){
+    Url::redirect("site/index");
+}
+
 $table_name = "transaksi_barang";
 $redirection = str_replace("_", "-", $table_name);
 $readable_name = ucwords(str_replace("_", " ", $table_name));

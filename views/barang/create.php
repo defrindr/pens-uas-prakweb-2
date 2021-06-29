@@ -1,4 +1,9 @@
 <?php
+
+if($this->user->get('name')==null){
+    Url::redirect("site/index");
+}
+
 $redirection = $table_name = "barang";
 $readable_name = ucwords(str_replace("_", " ", $table_name));
 $trigger = "submit";

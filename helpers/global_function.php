@@ -32,6 +32,14 @@ function getRootDir() {
     return $root_dir.$script_filename;
 }
 
+function getBaseUrl() {
+    $root_dir = $_SERVER['DOCUMENT_ROOT'];
+    $script_filename = $_SERVER['SCRIPT_FILENAME'];
+    $script_filename = str_replace($root_dir, "", $script_filename);
+    $script_filename = str_replace("/index.php", "", "$script_filename");
+    return "/$script_filename";
+}
+
 function buildOption($lists, $selected){
     $template = "";
 

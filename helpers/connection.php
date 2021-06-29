@@ -58,6 +58,7 @@ class Connection
         if (is_array($params[2])) {
             $query .= " ({$this->where($params[2][0], $params[2])})";
         } else {
+            $params[2] = mysqli_escape_string($this->connection, $params[2]);
             $query .= " '{$params[2]}'";
         }
 
@@ -213,9 +214,9 @@ class Connection
             $columns[] = $key['column_name'];
         }
 
-        if($without_key){
+        if ($without_key) {
             $primary_key = $this->getPrimaryKey($table_name);
-        
+
             $unset[] = $primary_key;
         }
 
@@ -242,15 +243,18 @@ class Connection
         return null;
     }
 
-    public function beginTransaction(){
+    public function beginTransaction()
+    {
         mysqli_begin_transaction($this->connection);
     }
 
-    public function commit(){
+    public function commit()
+    {
         mysqli_commit($this->connection);
     }
 
-    public function rollBack(){
+    public function rollBack()
+    {
         mysqli_rollback($this->connection);
     }
 }
