@@ -3,9 +3,9 @@
 class Url {
     public static function getBaseUrl()
     {
-        $scriptname = $_SERVER['SCRIPT_NAME'];
-        $scriptname = str_replace("index.php", "", $scriptname);
-        return $scriptname;
+        $protocol = "{$_SERVER['REQUEST_SCHEME']}://";
+        $host = $_SERVER['HTTP_HOST'];
+        return "{$protocol}{$host}/";
     }
     
     public static function to($uri, $params=[])

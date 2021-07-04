@@ -36,7 +36,11 @@ if (isset($response->error)) {
 }
 
 $check = $this->db->findOne([
-    "gid" => $info->id,
+    "where"=>[
+        "=",
+        "email", 
+        $info->email,
+    ]
 ], 'user');
 
 if ($check) {
@@ -49,9 +53,14 @@ if ($check) {
         "image" => $info->picture,
         "email" => $info->email,
     ], 'user');
-
     if ($saved) {
-        $this->user->login($saved);
+        $this->user->login($this->db->findOne([
+            "where"=>[
+                "=",
+                "email", 
+                $info->email,
+            ]
+        ], 'user'));
         Url::redirect('site');
     } else {
         echo "Terjadi kesalahan ketika menyimpan user:" . $this->db->getError();

@@ -9,7 +9,6 @@ include_once 'helpers/user.php';
 include_once 'helpers/url.php';
 include_once 'config/App.php';
 
-session_id("loremipsum");
 session_start();
 
 $app = new App();
